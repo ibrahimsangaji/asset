@@ -1,0 +1,141 @@
+doctype html
+html(lang='en')
+  head
+  meta(charset='utf-8')
+  title DOCUMENT PRINT - ICT MEMO
+  script.
+    function printDoc(){
+    window.print();
+    }
+  style.
+    body {
+    font-family: Calibri !important;
+    }
+    .clear-both {
+    clear: both;
+    }
+    .header, .footer {
+    width: 100%;
+    }
+    .header>div, .footer>div {
+    float: left;
+    width: 33.33%;
+    }
+    #container {
+    width: 100%;
+    margin: 80px auto;
+    }
+    .sub-header{
+    font-weight:bold;
+    font-size:16px;
+    }
+    .title {
+    text-align: center;
+    }
+    .titleID {
+    margin-top: 20px;
+    font-weight: bold;
+    text-decoration: underline;
+    }
+    .titleEN {
+    font-style: italic;
+    }
+    .docnumber {
+    text-align: right;
+    font-style: italic;
+    }
+    table {
+    border-collapse: collapse; border: 1px solid #000;
+    width:100%;
+    }
+    th {
+    border: 1px solid blue;
+    }
+    td {
+    border: 1px solid black;
+    padding:5px;
+    }
+    td:first-child {
+    width:180px;
+    font-weight:bold;
+    }
+    .ttd{
+      text-align:center;
+      height:100px;
+      border-bottom: 1px solid #000;
+      width: calc(33.33% - 120px) !important;
+      margin:60px;
+    }
+    .terms{
+      font-size:14px;
+    }
+  body(onload='printDoc();')
+    #container
+      .header
+        .logo
+          img#logo(src='https://i.ibb.co/hmjM9k9/logo-white.png', alt='', title='acset', width='150')
+        .title
+          .titleID NOTA SERAH TERIMA INVENTARIS
+          .titleEN INVENTORY HAND OVER FORM
+        .docnumber Document No #{toPrint[0].GINo}
+      .clear-both
+      br
+      .sub-header Information
+      table
+        tbody
+          tr
+            td Good Issue No.
+            td #{toPrint[0].GINo}
+          tr
+            td Transact Date
+            td #{toPrint[0].IssueDate}
+          tr
+            td SAP Item No.
+            td #{toPrint[0].AssetNumberSAP}
+          tr
+            td Function 
+            td #{toPrint[0].FunctionName} (#{toPrint[0].ReceiverFunction})
+          tr
+            td Receiver 
+            td #{toPrint[0].PIC}
+      br
+      .description
+        .sub-header ItemDescription
+        table
+           tbody
+            each item in toPrint
+              if item.AssetNumberSAP
+                tr
+                  td Asset Number System
+                  td #{item.AssetNumber} (#{item.TypeName})
+                tr 
+                  td  Brand
+                  td #{item.BrandName}
+                tr 
+                  td  Source (Rack)
+                  td #{item.RackName} on line #{item.RackLine}
+                tr 
+                  td  Specification
+                  td #{item.Spec}
+                tr 
+                  td  Installed on device
+                  td 
+                    each sw in item.AssetSoftware
+                      .swdetail #{sw.SoftwareName}
+      br
+      .description
+        .sub-header Terms & Condition
+        ol.terms
+          li Pemakai Inventaris wajib memeriksa kembali Inventaris yang diterima sebelum transaksi serah terima.
+          li Pemakai Inventaris DILARANG menyalahgunakan, memiliki, menjualbelikan, menggadaikan, menyewakan atau meminjamkan Inventaris.
+          li Barang Inventaris sepenuhnya menjadi Tanggung Jawab pemegang Inventaris baik atas kerusakan dan atau kehilangan (sesuai SOP ICT).
+          li Pemegang Inventaris wajib merawat dan bekerja sama dengan Departmen Pengelola untuk perawatan lebih lanjut.
+          li Jika Pemakai Inventaris berhenti bekerja / keluar dari ACSET, maka WAJIB menyerahkan kembali Inventaris yang dipakai ke Departmen Pengelola.
+        .footer
+          .ttd Submitted By <br/> <span style="font-size:10px;margin-right:65px;">Date : </span>
+          
+          .ttd Approved By <br/> <span style="font-size:10px;margin-right:65px;">Date : </span>
+          .ttd Receiver <br/> <span style="font-size:10px;margin-right:35px;">Date : </span> 
+      
+
+      

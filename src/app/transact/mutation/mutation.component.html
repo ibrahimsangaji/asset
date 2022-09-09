@@ -1,0 +1,103 @@
+<div class="clr-row clr-justify-content-center" style="margin-top:35px;">
+  <div class="clr-col-11 clr-col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <clr-icon shape="switch" size="20"></clr-icon> Mutation
+      </div>
+      <div class="card-block" style="min-height: 150px;">
+        <span>
+          <input type="text" id="basic" [(ngModel)]="fAssetNumber" placeholder="IT-AST-xxxx"
+            class="clr-input form-field" (keypress)="keypressInBox($event)">
+        </span>&nbsp;
+        <span><button type="button" (click)="fetchData()" class="btn btn-icon btn-sm btn-primary">
+            <clr-icon shape="search"></clr-icon>
+          </button>
+        </span>
+        <button type="button" class="btn btn-link btn-sm" (click)="getMyCamera()">
+          <clr-icon shape="qr-code"></clr-icon> {{showScan? "Hide Scanner":"OR SCAN"}}
+        </button>
+        <div [hidden]="!hasCameras" class="clr-row clr-justify-content-center" style="margin-top:5px;">
+          <div class="clr-col-10 clr-col-md-5">
+            <zxing-scanner #scanner class="test-class" start="true" [autofocusEnabled]="true"
+              [ngClass]="{'hide-video': showScan == false}" [formats]="['QR_CODE', 'EAN_13', 'CODE_128', 'DATA_MATRIX']"
+              [device]="selectedDevice" (scanSuccess)="handleQrCodeResult($event)" style="max-height:300px !important;">
+            </zxing-scanner>
+          </div>
+        </div>
+        <div *ngIf="rptObj.length>0">
+          <clr-datagrid *blockUI="'grid-block'">
+            <clr-dg-column>
+              Asset Number
+            </clr-dg-column>
+            <clr-dg-column>
+              SAP Number
+            </clr-dg-column>
+            <clr-dg-column>
+              GRNo
+            </clr-dg-column>
+            <clr-dg-column>
+              ReffNo
+            </clr-dg-column>
+            <clr-dg-column>
+              GINo
+            </clr-dg-column>
+            <clr-dg-column>
+              Function
+            </clr-dg-column>
+            <clr-dg-column>
+              PIC
+            </clr-dg-column>
+            <clr-dg-column>
+              Create Date
+            </clr-dg-column>
+            <clr-dg-column>
+              Approve Date
+            </clr-dg-column>
+            <clr-dg-row *clrDgItems="let asset of rptObj" [clrDgItem]="assets">
+              <clr-dg-cell>{{asset.AssetNumber}}</clr-dg-cell>
+              <clr-dg-cell>{{asset.AssetNumberSAP}}</clr-dg-cell>
+              <clr-dg-cell><a style="color:#0777BE;cursor: pointer;"
+                  (click)="getDetail(asset.GRNo, 1)">{{asset.GRNo}}</a>
+              </clr-dg-cell>
+              <clr-dg-cell>{{asset.ReffNo}}</clr-dg-cell>
+              <clr-dg-cell><a style="color:#0777BE;cursor: pointer;"
+                  (click)="getDetail(asset.GINo, 2)">{{asset.GINo}}</a>
+              </clr-dg-cell>
+              <clr-dg-cell>{{asset.GIReceiverFunction}}</clr-dg-cell>
+              <clr-dg-cell>{{asset.GIPIC}}</clr-dg-cell>
+              <clr-dg-cell>{{asset.CreateDate | date: 'yyyy-MM-dd'}}</clr-dg-cell>
+              (asset.ApproveDate | slice:0:4) ===
+              <clr-dg-cell>
+                {{((asset.ApproveDate | slice:0:4) === '1900' ? '' : asset.ApproveDate) | date: 'yyyy-MM-dd'}}
+              </clr-dg-cell>
+            </clr-dg-row>
+
+            <clr-dg-footer>
+              <clr-dg-column-toggle>
+                <clr-dg-column-toggle-title>Show Column</clr-dg-column-toggle-title>
+                <clr-dg-column-toggle-button>Check All</clr-dg-column-toggle-button>
+              </clr-dg-column-toggle>
+              {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+              of {{pagination.totalItems}} Data
+              <clr-dg-pagination #pagination [clrDgPageSize]="currentPageSize"></clr-dg-pagination>
+            </clr-dg-footer>
+          </clr-datagrid>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<clr-modal [(clrModalOpen)]="showDetailModal" [clrModalSize]="'lg'">
+  <h3 class="modal-title">Detail Transaction</h3>
+  <div class="modal-body">
+    <clr-datagrid>
+      <clr-dg-column *ngFor="let key of Keys">{{key}}</clr-dg-column>
+      <clr-dg-row *clrDgItems="let res of results">
+        <clr-dg-cell *ngFor="let item of res">{{item.value}}</clr-dg-cell>
+      </clr-dg-row>
+
+    </clr-datagrid>
+  </div>
+</clr-modal>

@@ -1,0 +1,46 @@
+<div class="clr-row">
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-12">
+    <div class="card" *blockUI="'form-block'">
+      <div class="card-header">
+        Form Device Type
+      </div>
+      <form clrForm>
+        <div class="card-block">
+          <clr-input-container>
+            <label>Type Code</label>
+            <input clrInput disabled="disabled" type="text" [(ngModel)]="code" name="typeCode"
+              placeholder="Auto Generated" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Name</label>
+            <input clrInput type="text" [(ngModel)]="name" name="Name" placeholder="Laptop, CPU, Tablet etc..." />
+          </clr-input-container>
+        </div>
+        <div class="card-footer">
+          <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">
+            {{message}}
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="submit()">
+            <clr-icon shape="check"></clr-icon> Save
+          </button>
+          <button type="reset" class="btn btn-sm btn-link">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-12">
+    <div class="card">
+      <div class="card-header">
+        Existing
+        <span style="float: right;"><input class="clr-input" type="text" [(ngModel)]="search" name="search"
+            placeholder="Search Device Name" (keydown)="onSearch()" />
+          <button type="button" class="btn btn-sm btn-icon btn-link" (click)="resetFilter()">
+            <clr-icon shape="close"></clr-icon>
+          </button></span>
+      </div>
+      <div class="card-block" *ngIf="types.length>0">
+        <app-comtable class="clr-col-12" [res]="types" [showcol]="showCol" (sendCodeParent)="acceptCode($event)"></app-comtable>
+      </div>
+    </div>
+  </div>
+</div>

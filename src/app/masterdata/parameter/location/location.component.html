@@ -1,0 +1,56 @@
+<div class="clr-row">
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-12">
+    <div class="card" *blockUI="'form-block'">
+      <div class="card-header">
+        Form Location
+      </div>
+      <form clrForm>
+        <div class="card-block">
+          <clr-input-container>
+            <label>Location Code</label>
+            <input clrInput disabled="disabled" type="text" [(ngModel)]="code" name="locationCode" placeholder="Auto Generated" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Name</label>
+            <input clrInput type="text" [(ngModel)]="name" name="Name" placeholder="Gedung, Lantai etc..." />
+          </clr-input-container>
+          <clr-select-container>
+            <label>Category Location</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="Location" [(ngModel)]="locCode">
+              <option value="">---None---</option>
+              <option value="HO">HO</option>
+              <option value="PROJECT">PROJECT</option>
+              <option value="AFFCO">AFFCO</option>
+            </select>
+          </clr-select-container>
+        </div>
+        <div class="card-footer">
+          <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">
+            {{message}}
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="submit()">
+            <clr-icon shape="check"></clr-icon> save
+          </button>
+          <button class="btn btn-sm btn-link" (click)="clear()">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-12">
+    <div class="card">
+      <div class="card-header">
+        Existing
+        <span style="float: right;">
+          <input class="clr-input" type="text" [(ngModel)]="search" name="search"
+            placeholder="Search Location Name" (keydown)="onSearch()" />
+          <button type="button" class="btn btn-sm btn-icon btn-link" (click)="resetFilter()">
+            <clr-icon shape="close"></clr-icon>
+          </button>
+        </span>
+      </div>
+      <div class="card-block" *ngIf="locations.length>0">
+        <app-comtable [res]="locations" [showcol]="showCol" (sendCodeParent)="acceptCode($event)"></app-comtable>
+      </div>
+    </div>
+  </div>
+</div>

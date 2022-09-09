@@ -1,0 +1,16 @@
+<clr-datagrid class="clr-col-12">
+  <clr-dg-column *ngFor="let key of Keys">{{key}}</clr-dg-column>
+
+  <clr-dg-row *clrDgItems="let res of results" (click)="sendCode(res)">
+    <clr-dg-cell *ngFor="let item of res">
+      {{item.value}}
+    </clr-dg-cell>
+  </clr-dg-row>
+  <clr-dg-footer>
+    <clr-dg-pagination #pagination [clrDgPageSize]="5">
+      <clr-dg-page-size [clrPageSizeOptions]="[5,10,20,50]"> per page</clr-dg-page-size>
+      {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+      of {{pagination.totalItems}} Item
+    </clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>

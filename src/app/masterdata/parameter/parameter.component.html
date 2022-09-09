@@ -1,0 +1,27 @@
+<div class="main-container">
+  <div class="content-container">
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
+    <clr-vertical-nav [clrVerticalNavCollapsible]="true">
+      <a title="Software" clrVerticalNavLink routerLink="/main/master/parameter/sw" class="nav-link">
+        <clr-icon clrVerticalNavIcon shape="application" class="is-solid"></clr-icon> Software
+      </a>
+      <a title="Device" clrVerticalNavLink routerLink="/main/master/parameter/type" class="nav-link">
+        <clr-icon clrVerticalNavIcon shape="devices"></clr-icon> Device
+      </a>
+      <a title="Brand" clrVerticalNavLink routerLink="/main/master/parameter/brand" class="nav-link">
+        <clr-icon clrVerticalNavIcon shape="tags" class="is-solid"></clr-icon> Brand
+      </a>
+      <a title="Rack" clrVerticalNavLink routerLink="/main/master/parameter/rack" class="nav-link">
+        <clr-icon clrVerticalNavIcon shape="library" class="is-solid"></clr-icon> Rack
+      </a>
+      <a title="Location" clrVerticalNavLink routerLink="/main/master/parameter/location" class="nav-link">
+        <clr-icon clrVerticalNavIcon shape="map-marker" class="is-solid"></clr-icon> Location
+      </a>
+      <a title="Function" clrVerticalNavLink routerLink="/main/master/parameter/function" class="nav-link">
+        <clr-icon clrVerticalNavIcon shape="users" class="is-solid"></clr-icon> Function
+      </a>
+    </clr-vertical-nav>
+  </div>
+</div>

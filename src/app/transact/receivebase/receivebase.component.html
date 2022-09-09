@@ -1,0 +1,16 @@
+<div class="receive-container">
+  <clr-tabs>
+    <clr-tab>
+      <button clrTabLink id="link1">New</button>
+      <clr-tab-content id="content1" *clrIfActive="true">
+        <app-receive></app-receive>
+      </clr-tab-content>
+    </clr-tab>
+    <clr-tab>
+      <button clrTabLink>Return</button>
+      <clr-tab-content *clrIfActive>
+        <app-return></app-return>
+      </clr-tab-content>
+    </clr-tab>
+  </clr-tabs>
+</div>

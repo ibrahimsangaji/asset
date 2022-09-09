@@ -1,0 +1,27 @@
+doctype html
+html(lang='en')
+  head
+    title Print QR
+    style.
+      .each{
+      font-family:Calibri !important;
+      float:left;
+      width:8%;
+      text-align:center;
+      margin-bottom:20px;
+      margin-left:5px;
+      font-size:10px;
+      font-weight:bold;
+      border:1px solid #000;
+      }
+  body
+    #container.col
+      each item in toPrint
+          if item.AssetNumberSAP
+            div.each #{item.AssetNumber}
+              div.block
+                img#barcode(src='https://api.qrserver.com/v1/create-qr-code/?data='+item.AssetNumber+'|'+item.AssetNumberSAP+'&size=50x50', alt='', title=''+item.AssetNumberSAP+'', width='150')
+          else
+            div.each #{item}
+              div.block
+                img#barcode(src='https://api.qrserver.com/v1/create-qr-code/?data='+item+'&size=50x50', alt='', title=''+item+'', width='50', height='50')

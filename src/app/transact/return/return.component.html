@@ -1,0 +1,106 @@
+<div class="clr-row clr-justify-content-center">
+  <div class="clr-col-11 clr-col-md-8">
+    <div class="card" *blockUI="'form-block'">
+      <form clrForm>
+        <div class="card-header">
+          <clr-icon shape="install" size="20"></clr-icon> Return Asset
+        </div>
+        <div class="card-block">
+          <label for="ng-select-list"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+            Asset Number
+          </label>
+          <input [attr.disabled]="lock ? 'disabled' : null" type="text" name="astnum" class="form-field-search"
+            placeholder="IT-AST-xxxx" (keypress)="keypressInBox($event)" [(ngModel)]="assetNumber" />
+          <button type="button" class="btn btn-link btn-sm" (click)="getAssetDetail(assetNumber)">
+            <clr-icon shape="search"> find</clr-icon>
+          </button><br />
+          <label for="qr-btn"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+          </label>
+          <button type="button" name="qr-btn" class="btn btn-link btn-sm" (click)="getMyCamera()">
+            <clr-icon shape="qr-code"></clr-icon> {{showScan? "Hide Scanner":"Scan Asset Number"}}
+          </button><br /><br />
+
+          <div [hidden]="!hasCameras" class="clr-row clr-justify-content-center" style="margin-top:5px;">
+            <div class="clr-col-10 clr-col-md-5">
+              <zxing-scanner #scanner class="test-class" start="true" [autofocusEnabled]="autofocusEnabled"
+                [ngClass]="{'hide-video': showScan == false}"
+                [formats]="['QR_CODE', 'EAN_13', 'CODE_128', 'DATA_MATRIX']" [device]="selectedDevice"
+                (scanSuccess)="handleQrCodeResult($event)" style="max-height:300px !important;"></zxing-scanner>
+            </div>
+          </div>
+          <label for="ng-select-list"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+            Asset List
+          </label>
+          <ng-select appendTo="body" name="ng-select-list" [items]="listAssets" bindLabel="AssetNumber"
+            bindValue="AssetNumber" [multiple]="true" [clearable]="true" placeholder="Select Asset to return"
+            [(ngModel)]="selectedListAssets" [ngModelOptions]="{standalone: true}" [closeOnSelect]="false"
+            style="display: inline-block;">
+          </ng-select>
+          <clr-input-container>
+            <label>GI No</label>
+            <input clrInput disabled='disabled' type="text" [(ngModel)]="assetOut.GINo" name="GINo" class="form-field"
+              placeholder="GI-xxxxx" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Function</label>
+            <input clrInput disabled='disabled' type="text" [(ngModel)]="assetOut.ReceiverFunction" name="rcrfunc"
+              class="form-field" placeholder="" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>PIC</label>
+            <input clrInput disabled='disabled' type="text" [(ngModel)]="assetOut.PIC" name="pic" class="form-field"
+              placeholder="" />
+          </clr-input-container>
+          <br />
+          <label for="date"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+            Receive Date</label>
+          <my-date-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="assetIn.ReceiveDate" placeholder=""
+            [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" class="form-field"></my-date-picker>
+          <br />
+          <clr-select-container>
+            <label>Placed on Rack</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optrack"
+              [(ngModel)]="assetIn.RackCode">
+              <option value="">---None---</option>
+              <option *ngFor="let rack of mRack" [value]="rack.RackCode">{{rack.Name}} at Line {{rack.Line}}</option>
+            </select>
+          </clr-select-container>
+          <clr-textarea-container>
+            <label>Specification</label>
+            <textarea [attr.disabled]="lock ? 'disabled' : null" rows="2" clrTextarea [(ngModel)]="assetIn.Spec"
+              name="notes" class="form-field"></textarea>
+          </clr-textarea-container>
+          <clr-textarea-container>
+            <label>Notes</label>
+            <textarea [attr.disabled]="lock ? 'disabled' : null" rows="2" clrTextarea [(ngModel)]="assetIn.Notes"
+              name="notes" class="form-field"></textarea>
+          </clr-textarea-container>
+
+        </div>
+        <div class="card-footer" style="text-align:center;">
+          <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">
+            {{message}}
+          </div>
+          <button class="btn btn-primary button-field" [attr.disabled]="lock ? 'disabled' : null" type="button"
+            (click)="submit()">
+            <clr-icon shape="check" style="margin-top:0 !important;"></clr-icon> &nbsp;Submit
+          </button>
+          <button class="btn btn-outline button-field" [attr.disabled]="lock ? 'disabled' : null" type="reset">
+            <clr-icon shape="times" style="margin-top:0 !important;"></clr-icon> &nbsp;Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="opened">
+  <h3 class="modal-title">Information</h3>
+  <div class="modal-body">
+    {{openedMessage}}
+  </div>
+</clr-modal>

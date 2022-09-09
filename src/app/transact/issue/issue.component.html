@@ -1,0 +1,79 @@
+<div class="clr-row clr-justify-content-center">
+  <div class="clr-col-11 clr-col-md-8">
+    <div class="card" *blockUI="'form-block'">
+      <form clrForm>
+        <div class="card-header">
+          <clr-icon shape="expand-card" size="20"></clr-icon> Asset Issue
+        </div>
+        <div class="card-block">
+          <label for="ng-select-list"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+            Asset List
+          </label>
+          <ng-select appendTo="body" name="ng-select-list" [items]="listAssets" bindLabel="AssetNumber"
+            [multiple]="true" [searchFn]="customSearchFn" [clearable]="true" placeholder="Select Asset Number"
+            [loading]="loading" [(ngModel)]="selectedListAssets" [ngModelOptions]="{standalone: true}"
+            [selectableGroup]="true" [selectableGroupAsModel]="false" [closeOnSelect]="false" groupBy="AssetNumberSAP"
+            style="display: inline-block;" (change)="onChange($event)">
+            <ng-template ng-optgroup-tmp let-item="item" let-item$="item$" let-index="index">
+              <input id="item-{{index}}" [ngModelOptions]="{standalone: true}" type="checkbox"
+                [ngModel]="item$.selected" /> {{item.AssetNumberSAP}}
+            </ng-template>
+            <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+              <input id="item-{{index}}" [ngModelOptions]="{standalone: true}" type="checkbox"
+                [ngModel]="item$.selected" /> {{item.AssetNumber}}
+            </ng-template>
+          </ng-select>
+          <br />
+          <clr-input-container>
+            <label>Qty</label>
+            <input clrInput [attr.disabled]="'disabled'" type="number" [(ngModel)]="assetOut.Unit"
+              name="qty" class="form-field" />
+          </clr-input-container>
+          <br/>
+          <label for="date"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+            Issue Date</label>
+          <my-date-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="issueDateDisplay" placeholder=""
+            [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" class="form-field"></my-date-picker>
+          <clr-select-container>
+            <label>Function</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optFunction"
+              [(ngModel)]="assetOut.ReceiverFunction">
+              <option *ngFor="let func of mFunction" [value]="func.FunctionCode">{{func.Name }}</option>
+            </select>
+          </clr-select-container>
+          <clr-input-container>
+            <label>PIC</label>
+            <input clrInput [attr.disabled]="lock ? 'disabled' : null" type="text" [(ngModel)]="assetOut.PIC" name="pic"
+              class="form-field" placeholder="Receiver name" />
+          </clr-input-container>
+        </div>
+        <div class="card-footer" style="text-align:center;">
+          <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">
+            {{message}}
+          </div>
+          <button class="btn btn-primary button-field" [attr.disabled]="lock ? 'disabled' : null" type="button"
+            (click)="checkDoubleGI()">
+            <clr-icon shape="check" style="margin-top:0 !important;"></clr-icon> &nbsp;Submit
+          </button>
+          <button class="btn btn-outline button-field" [attr.disabled]="lock ? 'disabled' : null" type="reset">
+            <clr-icon shape="times" style="margin-top:0 !important;"></clr-icon> &nbsp;Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+  
+  <clr-modal [(clrModalOpen)]="opened">
+    <h3 class="modal-title" [innerHTML]="openedMessage"></h3>
+    <div class="modal-body" *ngIf="doubleGI">
+        <a (click)="submit();opened = false;doubleGI=false" class="btn btn-primary btn-block" style="text-align: center !important;">
+            Ok, make it!
+        </a>
+        <a (click)="opened = false;doubleGI=false" class="btn btn-primary-outline btn-block" style="text-align: center !important;">
+            No
+        </a>
+    </div>
+  </clr-modal>

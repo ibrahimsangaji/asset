@@ -1,0 +1,38 @@
+<clr-header class="header-1">
+  <div class="branding" style="background-color:#283271;">
+      <a routerLink="/main/anchor" class="nav-link">
+          <img src="assets/img/logo.png" alt="" title="exp-logo">
+      </a>
+  </div>
+  <div class="header-actions" *ngIf="isLogin">
+      <clr-dropdown>
+          <button class="nav-icon" clrDropdownTrigger>
+              <clr-icon shape="user" style="margin-top:0 !important;" class="is-solid"></clr-icon>
+              <clr-icon shape="caret down" style="margin-top:0 !important;"></clr-icon>
+          </button>
+          <clr-dropdown-menu *clrIfOpen clrPosition="bottom-right">
+              <a (click)="logout()" clrDropdownItem>Logout</a>
+          </clr-dropdown-menu>
+      </clr-dropdown>
+  </div>
+</clr-header>
+<div *ngIf="traffic" class="progress loop" style="background: #fff !important; font-size: 3px; position: absolute; z-index: 99;">
+  <progress></progress>
+</div>
+<nav class="header-nav menus" [clr-nav-level]="1">
+  <!-- <a routerLink="/main/landing" class="nav-link">
+      <clr-icon shape="home" class="is-solid"></clr-icon> Home
+  </a> -->
+  <a *ngIf="!isLogin" routerLink="/main/login" class="nav-link">
+      <clr-icon shape="login"></clr-icon> Login
+  </a>
+  <a *ngIf="isLogin" routerLink="/main/landing" class="nav-link">
+      <clr-icon shape="grid-view" class="is-solid"></clr-icon> Home
+  </a>
+  <a *ngIf="isLogin" routerLink="/main/master/parameter/type" class="nav-link">
+      <clr-icon shape="view-list" class="is-solid"></clr-icon> Master Data
+  </a>
+  <a *ngIf="isLogin" (click)="logout()" class="nav-link">
+      <clr-icon shape="logout" class="is-solid"></clr-icon> Logout
+  </a>
+</nav>

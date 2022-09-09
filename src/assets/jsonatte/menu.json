@@ -1,0 +1,44 @@
+[
+    {
+        "Text": "Asset",
+        "Icon": "devices",
+        "RuleName":"staff",
+        "Path":"master/maintain"
+    },
+    {
+        "Text": "Receive",
+        "Icon": "archive",
+        "RuleName":"staff",
+        "Path":"transact/receive"
+    },
+    {
+        "Text": "Issue",
+        "Icon": "unarchive",
+        "RuleName":"staff",
+        "Path":"transact/issue"
+    },
+    {
+        "Text": "Approval",
+        "Icon": "checkbox-list",
+        "RuleName":"admin",
+        "Path":"transact/approval"
+    },
+    {
+        "Text": "Location",
+        "Icon": "map-marker",
+        "RuleName":"staff",
+        "Path":"transact/gihistory"
+    },
+    {
+        "Text": "Mutation",
+        "Icon": "switch",
+        "RuleName":"staff",
+        "Path":"transact/mutation"
+    },
+    {
+        "Text": "Stock Opname",
+        "Icon": "qr-code",
+        "RuleName":"staff",
+        "Path":"transact/sto-setup"
+    }
+]

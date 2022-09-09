@@ -1,0 +1,61 @@
+<div class="clr-row">
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-12">
+    <div class="card" *blockUI="'form-block'">
+      <div class="card-header">
+        Form Function
+      </div>
+      <form clrForm>
+        <div class="card-block">
+          <clr-input-container  *ngIf="OldCode == ''" >
+            <label>Function Code</label>
+            <input clrInput type="text" [(ngModel)]="code" name="funcCode" placeholder="Manually Assign" />
+          </clr-input-container>
+          <clr-input-container *ngIf="OldCode !== ''" >
+            <label>Function Code</label>
+            <input clrInput disabled="disabled" type="text" [(ngModel)]="OldCode" name="funcCode" placeholder="Manually Assign" />
+          </clr-input-container>
+          <clr-input-container *ngIf="OldCode !== ''" >
+            <label>Function Code New</label>
+            <input clrInput type="text" [(ngModel)]="code" name="newFunCode" placeholder="Manually Assign" />
+          </clr-input-container>
+          <clr-select-container>
+            <label>Location</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optLocation"
+              [(ngModel)]="locCode">
+              <option value="">---None---</option>
+              <option *ngFor="let loc of mLocation" [value]="loc.LocationCode">{{loc.Name}}</option>
+            </select>
+          </clr-select-container>
+          <clr-input-container>
+            <label>Name</label>
+            <input clrInput type="text" [(ngModel)]="name" name="Name" placeholder="Manually Assign" />
+          </clr-input-container>
+        </div>
+        <div class="card-footer">
+          <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">
+            {{message}}
+          </div>
+          <button class="btn btn-sm btn-primary" (click)="submit()">
+            <clr-icon shape="check"></clr-icon> save
+          </button>
+          <button type="reset" class="btn btn-sm btn-link">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="clr-col-lg-12 clr-col-md-12 clr-col-12">
+    <div class="card">
+      <div class="card-header">
+        Existing
+        <span style="float: right;"><input class="clr-input" type="text" [(ngModel)]="search" name="search"
+          placeholder="Search Function Name" (keydown)="onSearch()"/>
+          <button type="button" class="btn btn-sm btn-icon btn-link" (click)="resetFilter()">
+              <clr-icon shape="close"></clr-icon>
+          </button></span>
+      </div>
+      <div class="card-block" *ngIf="functions.length>0">
+        <app-comtable [res]="functions" [showcol]="showCol" (sendCodeParent)="acceptCode($event)"></app-comtable>
+      </div>
+    </div>
+  </div>
+</div>

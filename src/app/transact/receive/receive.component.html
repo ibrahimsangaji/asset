@@ -1,0 +1,138 @@
+<div class="clr-row clr-justify-content-center">
+  <div class="clr-col-11 clr-col-md-8">
+    <div class="card" *blockUI="'form-block'">
+      <form clrForm>
+        <div class="card-header">
+          <clr-icon shape="collapse-card" size="20"></clr-icon> Receive New Asset
+        </div>
+        <div class="card-block">
+          <!-- <clr-select-container>
+              <label>Transaction</label>
+              <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="options1"
+                [(ngModel)]="assetIn.TransactionType" (change)="onChangeTransactionType($event.target.value)">
+                <option value="0">---None---</option>
+                <option value="1">New Asset</option>
+                <option value="2">Return Asset</option>
+              </select>
+            </clr-select-container> 
+  
+            <clr-input-container *ngIf="assetIn.TransactionType ==2">
+              <label>Refference No</label>
+              <input clrInput [attr.disabled]="lock ? 'disabled' : null" type="text" [(ngModel)]="assetIn.ReffNo"
+                name="ReffNo" class="form-field" placeholder="GI Number / Asset Number" />
+              <clr-control-helper>
+                <button type="button" class="btn btn-link btn-sm">
+                  <clr-icon shape="qr-code"></clr-icon> Scan Asset Number
+                </button>
+              </clr-control-helper>
+            </clr-input-container>-->
+          <clr-select-container>
+            <label>Devices Type</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="opttype"
+              [(ngModel)]="assetIn.TypeCode">
+              <option value="">---None---</option>
+              <option *ngFor="let type of mType" [value]="type.TypeCode">{{type.Name}}</option>
+            </select>
+          </clr-select-container>
+          <clr-select-container>
+            <label>Brand</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optbrand"
+              [(ngModel)]="assetIn.BrandCode">
+              <option value="">---None---</option>
+              <option *ngFor="let brand of mBrand" [value]="brand.BrandCode">{{brand.Name}}</option>
+            </select>
+          </clr-select-container>
+          <clr-input-container>
+            <label>SAP AssetNo</label>
+            <input clrInput [attr.disabled]="lock ? 'disabled' : null" type="text" [(ngModel)]="assetIn.AssetNumberSAP"
+              name="assetnumbersap" class="form-field" placeholder="SAP Running Number" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Name</label>
+            <input clrInput [attr.disabled]="lock ? 'disabled' : null" type="text" [(ngModel)]="assetIn.AssetName"
+              name="assetname" class="form-field" placeholder="Asset/Devices Name" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>PO No.</label>
+            <input clrInput [attr.disabled]="lock ? 'disabled' : null" type="text" [(ngModel)]="assetIn.NoPO"
+              name="nopo" class="form-field" placeholder="SAP Purchase Order" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>PR No.</label>
+            <input clrInput [attr.disabled]="lock ? 'disabled' : null" type="text" [(ngModel)]="assetIn.NoPR"
+              name="nopr" class="form-field" placeholder="SAP Purchase Requisition" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Qty</label>
+            <input clrInput [attr.disabled]="lock ? 'disabled' : null" type="number" [(ngModel)]="assetIn.Unit"
+              name="qty" class="form-field" />
+          </clr-input-container>
+          <clr-input-container>
+            <label>Purchase Price</label>
+            <input clrInput currencyMask [options]="{ prefix: 'Rp ', thousands: '.', decimal: ',', align:'left', allowNegative:false, precision:0}" [attr.disabled]="lock ? 'disabled' : null" type="text" [(ngModel)]="assetIn.PurchasePrice"
+              name="purchaseprice" class="form-field" (keypress)="numberOnly($event)" />
+          </clr-input-container>
+          <br />
+          <label for="date"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+            Receive Date</label>
+          <my-date-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="assetIn.ReceiveDate" placeholder=""
+            [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" class="form-field"></my-date-picker>
+          <clr-select-container>
+            <label>Placed on Rack</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optrack"
+              [(ngModel)]="assetIn.RackCode">
+              <option value="">---None---</option>
+              <option *ngFor="let rack of mRack" [value]="rack.RackCode">{{rack.Name}} at Line {{rack.Line}}</option>
+            </select>
+          </clr-select-container>
+          <clr-textarea-container>
+            <label>Specification</label>
+            <textarea [attr.disabled]="lock ? 'disabled' : null" rows="2" clrTextarea [(ngModel)]="assetIn.Spec"
+              name="notes" class="form-field"></textarea>
+          </clr-textarea-container>
+          <clr-textarea-container>
+            <label>Notes</label>
+            <textarea [attr.disabled]="lock ? 'disabled' : null" rows="2" clrTextarea [(ngModel)]="assetIn.Notes"
+              name="notes" class="form-field"></textarea>
+          </clr-textarea-container>
+        </div>
+        <div class="card-footer" style="text-align:center;">
+          <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">
+            {{message}}
+          </div>
+          <button class="btn btn-primary button-field" [attr.disabled]="lock ? 'disabled' : null" type="button"
+            (click)="submit()">
+            <clr-icon shape="check" style="margin-top:0 !important;"></clr-icon> &nbsp;Submit
+          </button>
+          <button class="btn btn-outline button-field" [attr.disabled]="lock ? 'disabled' : null" type="reset">
+            <clr-icon shape="times" style="margin-top:0 !important;"></clr-icon> &nbsp;Reset
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="opened" *ngIf="assetRegistered.length>0">
+  <h3 class="modal-title">Asset registered, document Number <br />{{assetRegistered[0].GRNo}}</h3>
+  <div class="modal-body">
+    <div class="clr-row clr-justify-content-center">
+      <div class="clr-col-6">
+        <ul class="list-unstyled" style="font-size: 10px;">
+          <li *ngFor="let asset of assetRegistered; let index=index;">{{index % 2 ===0 ? asset.AssetNumber :""}}</li>
+        </ul>
+      </div>
+      <div class="clr-col-6">
+        <ul class="list-unstyled" style="font-size: 10px;">
+          <li *ngFor="let asset of assetRegistered; let index=index;">{{index % 2 !==0 ? asset.AssetNumber :""}}</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-link btn-sm" (click)="printQR()">
+      <clr-icon shape="qr-code"></clr-icon> Print QRCode (On Desktop)
+    </button>
+  </div>
+</clr-modal>

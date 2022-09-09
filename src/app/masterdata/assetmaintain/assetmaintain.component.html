@@ -1,0 +1,147 @@
+<div class="clr-row clr-justify-content-center" style="margin-top:35px;">
+  <div class="clr-col-11 clr-col-md-8">
+    <span>
+      <input type="text" size="15" id="basic" [(ngModel)]="fAssetNumber" placeholder="IT-AST-xxxx" class="clr-input"
+        (keyprress)="keypressInBox($event)">
+    </span>&nbsp;
+    <span>
+      <div class="clr-select-wrapper">
+        <select id="select-status" class="clr-select" [(ngModel)]="fStatus" (change)="searchAsset()">
+          <option value="0">All Status</option>
+          <option *ngFor="let status of mStatus" [value]="status.EnumValue">{{status.Info1}}</option>
+        </select>
+      </div>
+    </span>&nbsp;
+    <span>
+      <button type="button" (click)="searchAsset()" class="btn btn-icon btn-sm btn-primary">
+        <clr-icon shape="search"></clr-icon>
+      </button>
+    </span>
+    <span>
+      <button type="button" (click)="exportData()" class="btn btn-icon btn-sm btn-primary">
+        <clr-icon shape="export"></clr-icon> XLS
+      </button>
+    </span>
+    <clr-datagrid *blockUI="'grid-block'">
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          Asset Number
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column style="width: 120px;">
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          SAP Number
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <clr-dg-string-filter [clrDgStringFilter]="brandFilter"></clr-dg-string-filter>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          Brand
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          Name
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          Status
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-column>
+        <clr-dg-string-filter [clrDgStringFilter]="typeFilter"></clr-dg-string-filter>
+        <ng-container *clrDgHideableColumn="{hidden: false}">
+          Type
+        </ng-container>
+      </clr-dg-column>
+      <clr-dg-row *clrDgItems="let asset of assets" [clrDgItem]="assets">
+        <clr-dg-cell><a style="color:#0777BE;cursor: pointer;"
+            (click)="viewDetail(asset)">{{asset.AssetNumber}}</a>
+        </clr-dg-cell>
+        <clr-dg-cell>{{asset.AssetNumberSAP}}</clr-dg-cell>
+        <clr-dg-cell>{{asset.b_Name}}</clr-dg-cell>
+        <clr-dg-cell>{{asset.Name}}</clr-dg-cell>
+        <clr-dg-cell>{{asset.s_Info1}}</clr-dg-cell>
+        <clr-dg-cell>{{asset.t_Name}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>
+        <clr-dg-column-toggle>
+          <clr-dg-column-toggle-title>Show Column</clr-dg-column-toggle-title>
+          <clr-dg-column-toggle-button>Check All</clr-dg-column-toggle-button>
+        </clr-dg-column-toggle>
+        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+        of {{pagination.totalItems}} Item
+        <clr-dg-pagination #pagination [clrDgPageSize]="currentPageSize"></clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</div>
+<br />
+
+<clr-modal [(clrModalOpen)]="opened">
+  <h5 class="modal-title">Update Data Asset <b>{{selectedUpdate.AssetNumber}}</b></h5>
+  <div class="modal-body">
+    <div class="clr-row clr-justify-content-center">
+      <div class="clr-col-12">
+        <form clrForm>
+          <clr-select-container>
+            <label>Devices Type</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="opttype"
+              [(ngModel)]="selectedUpdate.TypeCode">
+              <option value="">---None---</option>
+              <option *ngFor="let type of mType" [value]="type.TypeCode">{{type.Name}}</option>
+            </select>
+          </clr-select-container>
+          <clr-select-container>
+            <label>Placed on Rack</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optrack"
+              [(ngModel)]="selectedUpdate.RackCode">
+              <option value="">---None---</option>
+              <option *ngFor="let rack of mRack" [value]="rack.RackCode">{{rack.Name}} at Line {{rack.Line}}</option>
+            </select>
+          </clr-select-container>
+          <clr-select-container>
+            <label>Brand</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optbrand"
+              [(ngModel)]="selectedUpdate.BrandCode">
+              <option value="">---None---</option>
+              <option *ngFor="let brand of mBrand" [value]="brand.BrandCode">{{brand.Name}}</option>
+            </select>
+          </clr-select-container>
+          <clr-textarea-container>
+            <label>Specification</label>
+            <textarea [attr.disabled]="lock ? 'disabled' : null" rows="2" clrTextarea [(ngModel)]="selectedUpdate.Spec"
+              name="notes" class="form-field"></textarea>
+          </clr-textarea-container><br/>
+          <label for="ng-select-list"
+            style="padding-left: 0 !important;padding-bottom: 0 !important;font-weight: bold;font-size: 13px;">
+            Sofware List
+          </label>
+          <ng-select appendTo="body" name="ng-select-list" [items]="listSw" bindLabel="Name"
+            [multiple]="true" [searchFn]="customSearchFn" [clearable]="true" placeholder="Select Software"
+            [loading]="loading" [(ngModel)]="selectedListSw" [ngModelOptions]="{standalone: true}"
+            [closeOnSelect]="false" style="display: inline-block;" (change)="onChange($event)">
+          </ng-select>
+          <clr-select-container>
+            <label>Status</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optstatus"
+              [(ngModel)]="selectedUpdate.Status">
+              <option value="">---None---</option>
+              <option *ngFor="let status of mStatus" [value]="status.EnumValue">{{status.Info1}}</option>
+            </select>
+          </clr-select-container>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-link btn-success" *ngIf="saved">
+      <clr-icon shape="check"></clr-icon>Saved!
+    </button>
+    <button class="btn btn-primary" (click)="updateAsset()" [attr.disabled]="lock ? 'disabled' : null">
+      <clr-icon shape="check"></clr-icon> Save
+    </button>
+  </div>
+</clr-modal>

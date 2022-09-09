@@ -1,0 +1,135 @@
+<div class="clr-row clr-justify-content-center">
+  <div class="clr-col-11 clr-col-md-8">
+    <div class="card">
+      <form clrForm>
+        <div class="card-header">
+          <clr-icon shape="file-settings" size="20"></clr-icon> Stock Opname
+        </div>
+        <div class="card-block">
+          <clr-select-container>
+            <label>Month</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optMonth"
+              [(ngModel)]="sto.Month">
+              <option value="0">--Select Month--</option>
+              <option *ngFor="let month of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="month">{{month}}</option>
+            </select>
+          </clr-select-container>
+          <clr-select-container>
+            <label>Year</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optYear"
+              [(ngModel)]="sto.Year">
+              <option value="0">--Select Year--</option>
+              <option *ngFor="let year of [2019,2020,2021,2022,2023,2024,2025]" [value]="year">{{year }}</option>
+            </select>
+          </clr-select-container>
+          <clr-select-container>
+            <label>Function</label>
+            <select [attr.disabled]="lock ? 'disabled' : null" [(ngModel)]="sltmFuc" class="form-field" clrSelect name="OptFunc">
+              <option value="0"> --ALL-- </option>
+              <option *ngFor="let nFucnc of mFunction" [value]="nFucnc.FunctionCode">{{nFucnc.Name}}</option>
+            </select>
+          </clr-select-container>
+        </div>
+        <div class="card-footer" style="text-align:center;">
+          <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">
+            {{message}}
+          </div>
+          <button class="btn btn-primary button-field" [attr.disabled]="lock ? 'disabled' : null" type="button"
+            (click)="registerSTO()">submit
+          </button>
+          <button class="btn btn-danger button-field tooltip tooltip-md" [attr.disabled]="lock ? 'disabled' : null"
+            type="button" role="tooltip" aria-haspopup="true" (click)="cancelClose(sto)">
+            <span class="tooltip-content">Cancel allowed if all status still "OPEN" in a selected periode</span>
+            Cancel
+          </button>
+          <button *ngIf="searchStatus==0" (click)="btSearch()" class="btn btn-icon btn-outline">
+            <clr-icon shape="search" class="is-solid"></clr-icon>
+            Search
+          </button>
+          <button *ngIf="searchStatus==1" (click)="resetFilter()" class="btn btn-icon btn-danger">
+            <clr-icon shape="repeat" class="is-solid"></clr-icon>
+            Reset
+          </button>
+          <button (click)="exportReport()" class="btn btn-icon btn-outline">
+            <clr-icon shape="printer" class="is-solid"></clr-icon>
+            PRINT
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="card" *blockUI="'form-block'">
+      <div class="card-header">
+        <clr-icon shape="history" size="20"></clr-icon> History Stock Opname
+        <span style="float: right;">
+          <input class="clr-input" type="text" [(ngModel)]="search" name="search"
+            placeholder="Search" (ngModelChange) = "onSearch()" />
+          <button type="button" class="btn btn-sm btn-icon btn-link" (click)="resetFilter()">
+            <clr-icon shape="close"></clr-icon>
+          </button>
+        </span>
+      </div>
+      <div class="card-block">
+        <clr-datagrid class="clr-col-12">
+          <clr-dg-column>STO Number</clr-dg-column>
+          <clr-dg-column>Month</clr-dg-column>
+          <clr-dg-column>Year</clr-dg-column>
+          <clr-dg-column>
+            <clr-dg-string-filter [clrDgStringFilter]="functionFilter"></clr-dg-string-filter>
+            Function
+          </clr-dg-column>
+          <clr-dg-column>Action</clr-dg-column>
+
+          <clr-dg-row *clrDgItems="let obj of listSto">
+            <clr-dg-cell><a style="color:#0777BE;cursor: pointer;" (click)="fetchDetail(obj)">{{obj.STOCode}}</a>
+            </clr-dg-cell>
+            <clr-dg-cell>{{obj.Month}}</clr-dg-cell>
+            <clr-dg-cell>{{obj.Year}}</clr-dg-cell>
+            <clr-dg-cell>{{obj.Name}}</clr-dg-cell>
+            <clr-dg-cell>
+              <button title="Open" [attr.disabled]="obj.EnumValue === 1 ? null : 'disabled'" class="btn btn-sm btn-icon btn-primary" (click)="goToPlay(obj)" role="tooltip" aria-haspopup="true">
+                <clr-icon shape="play"></clr-icon>
+              </button>
+              <button title="Reopen" [attr.disabled]="obj.EnumValue === 1 ? 'disabled' : null"
+              class="btn btn-sm btn-icon btn-danger" (click)="cancelClose(obj)">
+                <clr-icon shape="undo"></clr-icon>
+              </button>
+              <button title="download" class="btn btn-sm btn-icon btn-info-outline" (click)="downFile(obj)">
+                <clr-icon shape="download"></clr-icon>
+              </button>
+            </clr-dg-cell>
+          </clr-dg-row>
+
+          <clr-dg-footer>
+            <clr-dg-pagination #pagination [clrDgPageSize]="5">
+              <clr-dg-page-size [clrPageSizeOptions]="[5,10,20,25]"></clr-dg-page-size>
+              {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+              of {{pagination.totalItems}}
+            </clr-dg-pagination>
+          </clr-dg-footer>
+        </clr-datagrid>
+      </div>
+    </div>
+    <br />
+  </div>
+</div>
+
+<clr-modal [(clrModalOpen)]="showDetailModal" [clrModalSize]="'md'">
+  <div class="modal-body">
+    <clr-datagrid>
+      <clr-dg-column>Asset Number</clr-dg-column>
+      <clr-dg-column>Name</clr-dg-column>
+      <clr-dg-row *clrDgItems="let obj of listStoDetail">
+          <clr-dg-cell>{{obj.AssetNumber}}</clr-dg-cell>
+        <clr-dg-cell>{{obj.Name}}</clr-dg-cell>
+      </clr-dg-row>
+
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="10">
+          <clr-dg-page-size [clrPageSizeOptions]="[10,20,50,100]">Data per page</clr-dg-page-size>
+          {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+          of {{pagination.totalItems}} Data
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+</clr-modal>

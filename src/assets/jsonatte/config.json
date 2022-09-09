@@ -1,0 +1,21 @@
+{
+    "AppName": "Assetman",
+    "Version":"0.0.0.1",
+    "WebMainAddress": "http://localhost:4200/",
+    "AuthProtocol": {
+        "LoginAddress": "http://heimdal.acset.co/",
+        "ChangePasswordAddress": "https://sso-beta.acset.co/User/ChangePassword",
+        "client_id": "assetman_ui",
+        "redirect_uri" :"auth-callback",
+        "response_type": "id_token token",
+        "scope": "openid profile assetman roles",
+        "filterProtocolClaims": true,
+        "loadUserInfo": true
+    },
+    "ApiDev":{
+        "global_api":"https://localhost:8081/api"
+    },
+    "ApiProd":{
+        "global_api":"https://localhost:8081/api"
+    }
+}

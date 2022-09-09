@@ -1,0 +1,21 @@
+<div class="clr-row clr-justify-content-center" *ngIf="assets.length==0">
+    <div class="clr-col-12"><h4>Loading...</h4></div>
+</div>
+<div class="clr-row clr-justify-content-center" *ngIf="assets.length>0">
+  <div class="clr-col-12">
+    <clr-datagrid>
+      <clr-dg-column>
+        Asset Number
+      </clr-dg-column>
+      <clr-dg-row *clrDgItems="let asset of assets" [clrDgItem]="assets">
+        <clr-dg-cell>{{asset.AssetNumber}}</clr-dg-cell>
+        <ng-container ngProjectAs="clr-dg-row-detail" *ngIf="asset">
+          <clr-dg-row-detail *clrIfExpanded>
+            <app-viewassetdetail [assetnumber]="asset.AssetNumber" *ngIf="asset"></app-viewassetdetail>
+          </clr-dg-row-detail>
+        </ng-container>
+      </clr-dg-row>
+    </clr-datagrid>
+    
+  </div>
+</div>
