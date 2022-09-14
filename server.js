@@ -8,8 +8,8 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const configsettings = require('./server/config');
 const timeout = require('connect-timeout'); //express v4
-
-//Cors 123
+//tes
+//Cors
 app.use(cors());
 app.options('*', cors());
 //registering view
