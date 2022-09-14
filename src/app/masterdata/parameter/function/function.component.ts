@@ -50,6 +50,10 @@ export class FunctionComponent implements OnInit {
     this.search = "";
     this.functions = this.functionsOri;
   }
+  restView(){
+    this.OldCode = "";
+    this.search = "";
+  }
   submit() {
     var cekTemp = 0;
     if(this.functionsOri.find(m => m.Name === this.name && m.FunctionCode === this.code)){

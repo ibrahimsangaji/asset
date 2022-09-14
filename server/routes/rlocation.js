@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.post('/loc/namecode/', function (req, res, next) {
-    console.log("Sukses namecode")
+    // console.log("Sukses")
     cmd.getAllLocationNameCrit(req.body, function (err, rows) {
         if (err) { res.json(err); }
         else { res.json(rows.success.recordset); }

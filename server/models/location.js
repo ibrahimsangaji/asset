@@ -11,7 +11,6 @@ exports.getAllLocation = (done) => {
 };
 exports.getAllLocationNameCrit = (obj, done) => {
     let sql = "select Id,RowStatus,LocationCode,Name,Enable,format(CreateDate,'yyyy-MM-dd HH:mm:ss') CreateDate,CreateBy,format(UpdateDate,'yyyy-MM-dd HH:mm:ss') UpdateDate,UpdateBy,CategoryLocation from Location where Name ='" + obj.Name + "' and CategoryLocation = '"+ obj.LocCode +"'" ;
-    console.log("query -> "+sql)
     db.execSql(sql).then(res=>{
         done(null, res);
     }).catch((err)=> {
