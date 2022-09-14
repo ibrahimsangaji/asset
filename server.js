@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const configsettings = require('./server/config');
 const timeout = require('connect-timeout'); //express v4
 
-//Cors
+//Cors 123
 app.use(cors());
 app.options('*', cors());
 //registering view
