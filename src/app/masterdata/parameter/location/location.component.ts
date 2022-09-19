@@ -47,55 +47,54 @@ export class LocationComponent implements OnInit {
 
   submit() {
     if ((this.name === "" || this.name == null) || (this.locCode === "" || this.locCode == null)){
-      this.toasterService.error("Location name and location catrgory must be full filled!");
+      this.toasterService.error("Location name and category location must be full filled!");
       return;
     }
     
-      this.masterService.getAllLocationbyNameAndCode({Name : this.name, LocCode : this.locCode}).subscribe(resFind => {
-        console.log(resFind[0])
-        if(resFind[0]) {
-          this.toasterService.warning("Data already exist!");
-          this.search = this.name;
-          this.onSearch();
-          return ;
-        }else{
-          console.log('else namcod')
-          if ((this.name === "" || this.name == null) && (this.locCode === "" || this.locCode == null)){
-            this.toasterService.error("Location name must be full filled!");
-            return;
-          }
-
-          this.blockUIList.start();
-          this.masterService.getLocationCriteria({ LocationCode: this.code }).subscribe(ck => {
-            console.log(ck)
-            console.log(ck[0])
-            if (ck[0]) {
-              this.masterService.putLocation({ Name: this.name, LocationCode: this.code, LocCat: this.locCode }).subscribe(res => {
-                if (res.success) {
-                  this.code = "";
-                  this.name = "";
-                  this.locCode = "";
-                  this.locations = [];
-                  this.toasterService.success("Data updated!");
-                  this.fetchData();
-                }
-              })
-            } else {
-              this.masterService.postLocation({ Name: this.name, LocationCode: this.code, LocCat: this.locCode }).subscribe(res => {
-                if (res[0]) {
-                  this.code = "";
-                  this.name = "";
-                  this.locCode = "";
-                  this.locations = [];
-                  this.toasterService.success("Data inserted!");
-                  this.fetchData();
-                }
-              })
-            }
-          })
-
+    this.masterService.getAllLocationbyNameAndCode({Name : this.name, LocCode : this.locCode}).subscribe(resFind => {
+    console.log(resFind[0])
+      if(resFind[0]) {
+        this.toasterService.warning("Data already exist!");
+        this.search = this.name;
+        this.onSearch();
+        return ;
+      } else {
+        console.log('else namcod')
+        if ((this.name === "" || this.name == null) && (this.locCode === "" || this.locCode == null)){
+          this.toasterService.error("Location name must be full filled!");
+          return;
         }
-      })
+        
+        this.blockUIList.start();
+        this.masterService.getLocationCriteria({ LocationCode: this.code }).subscribe(ck => {
+          console.log(ck)
+          console.log(ck[0])
+          if (ck[0]) {
+            this.masterService.putLocation({ Name: this.name, LocationCode: this.code, LocCat: this.locCode }).subscribe(res => {
+              if (res.success) {
+                this.code = "";
+                this.name = "";
+                this.locCode = "";
+                this.locations = [];
+                this.toasterService.success("Data updated!");
+                this.fetchData();
+              }
+            })
+          } else {
+            this.masterService.postLocation({ Name: this.name, LocationCode: this.code, LocCat: this.locCode }).subscribe(res => {
+              if (res[0]) {
+                this.code = "";
+                this.name = "";
+                this.locCode = "";
+                this.locations = [];
+                this.toasterService.success("Data inserted!");
+                this.fetchData();
+              }
+            })
+          }
+        })
+      }
+    })
     
     
     // if ((this.name === "" || this.name == null) && (this.locCode === "" || this.locCode == null)){
@@ -136,6 +135,7 @@ export class LocationComponent implements OnInit {
     this.name = "";
     this.locCode = "";
     this.search = "";
+    this.locations = this.locationsOri;
   }
 
   acceptCode(obj) {

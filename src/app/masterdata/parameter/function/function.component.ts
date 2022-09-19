@@ -42,7 +42,7 @@ export class FunctionComponent implements OnInit {
   }
   onSearch(){
     setTimeout(() => {
-      this.functions = this.functionsOri.filter(f=>f.Name.toLowerCase().indexOf(this.search.toLowerCase()) > -1);
+      this.functions = this.functionsOri.filter(f=>f.FunctionCode.indexOf(this.search.toUpperCase()) > -1);
     }, 100);
     
   }
@@ -50,11 +50,22 @@ export class FunctionComponent implements OnInit {
     this.search = "";
     this.functions = this.functionsOri;
   }
+  restView(){
+    this.OldCode = "";
+    this.search = "";
+    this.functions = this.functionsOri;
+  }
+
   submit() {
+    this.code = this.code.toUpperCase();
     var cekTemp = 0;
-    if(this.functionsOri.find(m => m.Name === this.name && m.FunctionCode === this.code)){
+    console.log(this.code)
+    console.log(this.name)
+    var tempcode = this.functionsOri.find(m=> m.FunctionCode == this.code)
+
+    if(this.functionsOri.find(m => m.Name === this.name && m.FunctionCode === this.code || m.FunctionCode === this.OldCode) || tempcode != undefined){
       this.toasterService.warning("Data already exist!");
-      this.search = this.name;
+      this.search = this.code;
       this.onSearch();
       return ;
     } else if (this.functionsOri.find(m => m.Name === this.name && m.FunctionCode != this.code)) {
@@ -68,15 +79,14 @@ export class FunctionComponent implements OnInit {
       this.toasterService.error("All fields must be full filled!");
       return;
     }
-    console.log(this.code)
-    console.log(this.name)
+
     if (this.code === "" || this.name === "") {
       this.handleError("Function Code and Name must be defined!");
       return;
     }
 
     this.blockUIList.start();
-    var dateUpdate = moment().format("yyyy-MM-dd HH:mm:ss")
+    var dateUpdate = moment().format("YYYY-MM-DD HH:mm:ss")
 
     if (cekTemp == 1) {
       console.log('Code Baru')
@@ -85,6 +95,7 @@ export class FunctionComponent implements OnInit {
           console.log('updated')
           this.masterService.updateFunctionNew({ Id: ck[0].Id ,Name: this.name, FunctionCode: this.code, LocationCode: this.locCode, OldCode : this.OldCode, UpdateDate : dateUpdate, UpdateBy : null }).subscribe(res => {
             if (res.success) {
+              this.OldCode = "";
               this.code = "";
               this.name = "";
               this.locCode = "";
@@ -97,6 +108,7 @@ export class FunctionComponent implements OnInit {
           console.log("insert")
           this.masterService.postFunctions({ Name: this.name, FunctionCode: this.code, LocationCode: this.locCode }).subscribe(res => {
             if (res[0]) {
+              this.OldCode = "";
               this.code = "";
               this.name = "";
               this.locCode = "";
@@ -112,6 +124,7 @@ export class FunctionComponent implements OnInit {
         if (ck[0]) {
           this.masterService.putFunctions({ Name: this.name, FunctionCode: this.code, LocationCode: this.locCode, UpdateDate : dateUpdate, UpdateBy : null }).subscribe(res => {
             if (res.success) {
+              this.OldCode = "";
               this.code = "";
               this.name = "";
               this.locCode = "";
