@@ -130,6 +130,19 @@ export class TransactService {
         }
       ));
   }
+  
+  batchSTO(obj: any): Observable<any> {
+    let token: any;
+    token = JSON.parse(localStorage.getItem('currentUser'));
+    let _headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = _headers.append('x-access-token', "ad");
+    return this.httpClient.post<any>(this.url + '/sto/batch', obj, { headers: headers }).pipe(
+      map(
+        res => {
+          return res;
+        }
+      ));
+  }
 
   getSTOCriteria(criteria): Observable<any> {
     let token: any;

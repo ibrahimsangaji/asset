@@ -102,10 +102,10 @@ router.get('/params', function (req, res, next) {
     });
 });
 
-router.post('/report/:key1/:key2', function (req, res, next) {
+router.post('/report/:key1/:key2/:key3', function (req, res, next) {
     if (req.body) {
         console.log(req.body)
-        cmd.reportSTO(req.params.key1, req.params.key2, function (err, rows) {
+        cmd.reportSTO(req.params.key1, req.params.key2, req.params.key3, function (err, rows) {
             console.log(rows)
             if (err) { res.json(err); }
             else { res.json(rows.success.recordset); }

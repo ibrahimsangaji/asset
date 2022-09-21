@@ -53,12 +53,12 @@ export class MasterService {
       ));
   }
 
-  getReport(month:number, year:number) {
+  getReport(month:number, year:number, code:any) {
     let token: any;
     token = JSON.parse(localStorage.getItem('currentUser'));
     let _headers = new HttpHeaders().set('Content-Type', 'application/json');
     const headers = _headers.append('x-access-token', "ad");
-    return this.httpClient.post<any>(this.url + "/asset/report"+"/"+month+"/"+year, {}, { headers: headers }).pipe(
+    return this.httpClient.post<any>(this.url + "/asset/report"+"/"+month+"/"+year+"/"+code, {}, { headers: headers }).pipe(
       map(
         res => {
           return res;

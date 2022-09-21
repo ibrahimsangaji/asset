@@ -30,6 +30,13 @@
             <label>Name</label>
             <input clrInput type="text" [(ngModel)]="name" name="Name" placeholder="Manually Assign" />
           </clr-input-container>
+          <clr-select-container *ngIf="OldCode !== ''">
+            <label>Status</label>
+            <select class="form-field" clrSelect name="optRowStatus" [(ngModel)]="RowStatus">
+              <option value="0">Tidak Aktif</option>
+              <option value="1">Aktif</option>
+            </select>
+          </clr-select-container>
         </div>
         <div class="card-footer">
           <div *ngIf="hasError" style="color:red;font-weight: bold;margin-bottom:10px;">

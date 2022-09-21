@@ -1,3 +1,4 @@
+const { Console } = require('console');
 const db = require('../connection/connection');
 
 exports.getAllSTO = (done) => {
@@ -13,6 +14,7 @@ exports.getAllSTO = (done) => {
 exports.getAllSTOByCriteria = (Obj, done) => {
     var wh = db.whereCriteriaGenerator(Obj);
     let sql = "select Id,RowStatus,STOCode,Month,Year,FunctionCode,Status,format(ApproveDate,'yyyy-MM-dd HH:mm:ss') ApproveDate,ApproveBy,format(CreateDate,'yyyy-MM-dd HH:mm:ss') CreateDate,CreateBy,format(UpdateDate,'yyyy-MM-dd HH:mm:ss') UpdateDate,UpdateBy from StockOpname"+wh;
+    console.log(sql)
     db.execSql(sql).then(res=>{
         done(null, res);
     }).catch((err)=> {
@@ -23,6 +25,7 @@ exports.getAllSTOByCriteria = (Obj, done) => {
 
 exports.insertSTO = (Obj, done) => {
     let sql = "exec up_insertStockOpname @Month='"+Obj.Month+"',@Year='"+Obj.Year+"',@FunctionCode='"+Obj.FunctionCode+"',@Status='"+Obj.Status+"',@CreateBy='"+Obj.CreateBy+"';";
+    console.log(sql)
     db.execSql(sql).then(res=>{
         done(null, res);
     }).catch((err)=> {
@@ -30,6 +33,29 @@ exports.insertSTO = (Obj, done) => {
         //conn.close();
     });
 };
+
+//bulkSTO--------------
+exports.getNumSTO = (done) => {
+    let sql = "select 'IT-STO-'+RIGHT('000000000'+cast(ISNULL(MAX(RIGHT(STOCode, 6)),0)+1 as varchar),6)  from StockOpname";
+    db.execSql(sql).then(res=>{
+        done(null, res);
+    }).catch((err)=> {
+        done(err);
+        //conn.close();
+    });
+};
+
+exports.insertSTOBulk = (Obj, done) => {
+    let sql = "exec up_insertBulkStockOpname @Month='"+Obj.Month+"',@Year='"+Obj.Year+"',@FunctionCode='"+Obj.FunctionCode+"',@Status='"+Obj.Status+"',@CreateBy='"+Obj.CreateBy+"', @Numsto='"+Obj.Numsto+"';";
+    console.log(sql)
+    db.execSql(sql).then(res=>{
+        done(null, res);
+    }).catch((err)=> {
+        done(err);
+        //conn.close();
+    });
+};
+//---------------------
 
 
 //detail--------------------
@@ -88,7 +114,10 @@ exports.getCurrentPositionCriteria = (Obj, done) => {
 };
 
 exports.updateSTO = (Obj, done) => {
-    let sql = "update StockOpname set RowStatus="+Obj.RowStatus+", Status="+Obj.Status+" where STOCode = '"+Obj.STOCode+"';";
+    console.log(Obj)
+    // let sql = "update StockOpname set RowStatus="+Obj.RowStatus+", Status="+Obj.Status+" where STOCode = '"+Obj.STOCode+"';";
+    let sql = "update StockOpname set Status="+Obj.Status+" where STOCode = '"+Obj.STOCode+"';";
+    console.log(sql)
     db.execSql(sql).then(res=>{
         done(null, res);
     }).catch((err)=> {
