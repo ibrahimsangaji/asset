@@ -115,6 +115,30 @@ exports.getAllAssetSoftwareByCriteria = (Obj, done) => {
     });  
 };
 
+//Asset Report
+exports.getReportAsset = (done) => {
+    let sql = "select * from uv_assetReport";
+    db.execSql(sql).then(res=>{
+       
+        done(null, res);
+    }).catch((err)=> {
+        done(err);
+        //conn.close();
+    });  
+};
+
+exports.getAssetSW = (Obj, done) => {
+    let sql = "select s.Name from Software as s left join AssetSoftware as asw on asw.SWCode = s.SWCode left join Asset as a on a.AssetNumber = asw.AssetNumber where a.AssetNumber = '"+ Obj + "'";
+    db.execSql(sql).then(res=>{
+        done(null, res);
+    }).catch((err)=> {
+        done(err);
+        //conn.close();
+    });  
+};
+
+
+
 exports.getAllAssetSoftwareByCriteriaWithDesc = (Obj, done) => {
     var wh = db.whereCriteriaGenerator(Obj);
     

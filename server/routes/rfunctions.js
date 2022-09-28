@@ -9,6 +9,7 @@ router.get('/', function (req, res, next) {
     });
 });
 
+//function verification get all
 router.post('/functions_cr/', function (req, res, next) {
     if (req.body) {
         cmd.getAllFunctionsByCriteria(req.body, function (err, rows) {
@@ -51,6 +52,8 @@ router.put('/', function (req, res, next) {
 router.put('/update/', function (req, res, next) {
     if (req.body) {
         cmd.validatFunction(req.body, function (err, rows) {
+            console.log(rows)
+            console.log(err)
             console.log(rows.success.recordset[0].total)
             if(rows.success.recordset[0].total  == 0) {
                 cmd.updateFunctionNew(req.body, function (err, rows) {
