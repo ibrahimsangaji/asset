@@ -27,6 +27,19 @@ export class MasterService {
       ));
   }
 
+  getAssetReport() {
+    let token: any;
+    token = JSON.parse(localStorage.getItem('currentUser'));
+    let _headers = new HttpHeaders().set('Content-Type', 'application/json');
+    const headers = _headers.append('x-access-token', "abc");
+    return this.httpClient.get<any>(this.url + '/asset/report', { headers: headers }).pipe(
+      map(
+        res => {
+          return res;
+        }
+      ));
+  }
+
   getCurrentPosition(criteria): Observable<any> {
     let token: any;
     token = JSON.parse(localStorage.getItem('currentUser'));

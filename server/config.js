@@ -1,5 +1,5 @@
 module.exports = {
-    'secret': 'ricohgrii',
+    'secret': 'ricohgi',
     'pdfStorage': 'C:\\Users\\erwina\\Documents\\RnD\\pdf\\',
     'imgStorage': 'C:\\Users\\erwina\\Documents\\RnD\\image\\',
     'baseUrl':'http://localhost:8081/',
