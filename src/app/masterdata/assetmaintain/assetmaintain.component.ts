@@ -33,8 +33,12 @@ export class AssetmaintainComponent implements OnInit {
   brandFilter = new BrandFilter();
   @BlockUI('grid-block') blockUIList: NgBlockUI;
   assetOri = [];
+  assetOri2 = [];
   assetData = [];
+  assetData2 = [];
   assets = [];
+  assets2 = [];
+  assets3 = [];
   mType = [];
   mBrand = [];
   mRack = [];
@@ -62,6 +66,7 @@ export class AssetmaintainComponent implements OnInit {
       this.listSw = res;
     })
     this.fetchData();
+    this.newGenerate();
   }
 
   customSearchFn(term: string, item: Asset) {
@@ -85,7 +90,11 @@ export class AssetmaintainComponent implements OnInit {
           { key: 'RackCode', propMap2: p => 'r_' + p }), this.mStatus,
         { key1: "Status", key2: "EnumValue", propMap2: p => 's_' + p });
 
-      // console.log(this.assetOri);
+      console.log(this.assetOri);
+      // console.log(this.mBrand);
+      // console.log(this.mType);
+      // console.log(this.mRack);
+      // console.log(this.mStatus);
 
       this.transService.getCurrentPosition({}).subscribe(resPos => {
         resPos.forEach(function(v){ delete v.BrandCode;
@@ -95,12 +104,15 @@ export class AssetmaintainComponent implements OnInit {
           delete v.StatusAssetOutHeader;
           delete v.TypeCode; });
         
-        console.log(resPos)
+        // console.log(resPos)
         for(let i=0; i<this.assetOri.length; i++) {
           var tempFInd = resPos.find((itmInner) => itmInner.AssetNumber === this.assetOri[i].AssetNumber)
           if(tempFInd != null || tempFInd != undefined){
             this.assetOri[i].PIC = tempFInd.PIC
             this.assetOri[i].ReceiverFunction = tempFInd.ReceiverFunction
+          } else {
+            this.assetOri[i].PIC = null
+            this.assetOri[i].ReceiverFunction = null
           }
           // merged.push({
           //  ...this.assetOri[i], 
@@ -122,14 +134,16 @@ export class AssetmaintainComponent implements OnInit {
                   this.assetOri[index].LocationCode = tempLoc.LocationCode
                   this.assetOri[index].NameLocation = tempLoc.Name
                   this.assetOri[index].CategoryLocation = tempLoc.CategoryLocation
+                } else {
+                  this.assetOri[index].LocationCode = null
+                  this.assetOri[index].NameLocation = null
+                  this.assetOri[index].CategoryLocation = null
                 }
                 // lastMerge.push({
                 //   ...merged[index],
                 //   ...tempLoc,
                 // })
-                
               }
-              
             }
           })
         })
@@ -139,6 +153,21 @@ export class AssetmaintainComponent implements OnInit {
       this.blockUIList.stop();
     });
   }
+
+  newGenerate() {
+    this.blockUIList.start();
+    this.masterService.getAssetReport().subscribe(resGet => {
+      console.log(resGet)
+      resGet.forEach(element => {
+          // console.log(element)
+          this.assets2.push(element)
+          this.assets3 = this.assets2
+          // console.log(this.assets3)
+        });
+    });
+    this.blockUIList.stop();
+  }
+
   searchAsset() {
     this.assets = this.assetOri;
     this.assets = this.assets.filter(f => f.AssetNumber.toLowerCase().indexOf(this.fAssetNumber.toLowerCase()) >= 0);
@@ -190,56 +219,37 @@ export class AssetmaintainComponent implements OnInit {
   }
 
   exportData() {
+    this.newGenerate()
     var exportData = []
-    this.assets.forEach(element => {
-      var tempExport = {}
-      tempExport['Name (SAP Based)'] = element.Name
-      tempExport['Suggest Name (SAP Based)'] = null
-      tempExport['Additional Description'] = element.PIC
-      tempExport['Asset Number'] = element.AssetNumber
-      tempExport['Asset Main Number Text'] = element.AssetNumberSAP
-      tempExport['Tag Number'] = element.AssetNumberSAP
-      tempExport['Serial Number'] = null
-      tempExport['License Plat Number'] = null
-      tempExport['Last Inventory On'] = null
-      tempExport['Asset Status_Code'] = element.s_RowStatus
-      switch (element.s_RowStatus) {
+    var flags = [], output = [], l = this.assets2.length, i;
+    for( i=0; i<l; i++) {
+        if( flags[this.assets2[i]['Asset Number']]) continue;
+        flags[this.assets2[i]['Asset Number']] = true;
+        output.push(this.assets2[i]['Asset Number']);
+    }
+    console.log(this.assets2)
+    this.assets2.forEach(element => {
+      
+      switch (element['Asset Status_Code']) {
         case 1:
-          tempExport['Asset Status_Description'] = 'Very Good-Used'
+          element['Asset Status_Description'] = 'Very Good-Used'
           break;
         case 2:
-          tempExport['Asset Status_Description'] = 'Good-Used'
+          element['Asset Status_Description'] = 'Good-Used'
           break;
         case 3:
-          tempExport['Asset Status_Description'] = 'Not Good'
+          element['Asset Status_Description'] = 'Not Good'
           break;
         case 4:
-          tempExport['Asset Status_Description'] = 'Damaged'
+          element['Asset Status_Description'] = 'Damaged'
           break;
         case 5:
-          tempExport['Asset Status_Description'] = 'Lost'
+          element['Asset Status_Description'] = 'Lost'
           break;
       }
-      tempExport['Tag Status_Code'] = null
-      tempExport['Tag Status_Description'] = null
-      tempExport['Asset type_Code'] = null
-      tempExport['Asset type_Description'] = element.t_Name
-      tempExport['Asset type_Description(Brand)'] = element.b_Name
-      tempExport['Location of assete_Code'] = null
-      tempExport['Location of assete_Name Location'] = element.NameLocation
-      tempExport['Location of assete_Function'] = element.ReceiverFunction
-      tempExport['Location of assete_LocationCode'] = element.LocationCode
-      tempExport['Location of assete_Category'] = element.CategoryLocation
-      tempExport['Status'] = null
-      tempExport['Keterangan'] = element.Spec
-      tempExport['Create Date'] = element.CreateDate
-      tempExport['Update Datee'] = element.UpdateDate
-      tempExport['Update By'] = element.UpdateBy
-      tempExport['Software'] = element.Software
-
-      exportData.push(tempExport)
+      
     });
 
-    this.ecs.exportAsExcelFile(exportData, "asset-IT");
+    this.ecs.exportAsExcelFile(this.assets2, "asset-IT");
   }
 }
