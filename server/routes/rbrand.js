@@ -3,6 +3,8 @@ var express = require('express');
 var router = express.Router();
 
 router.get('/', function (req, res, next) {
+    console.log(req.header)
+    console.log(req.body)
     cmd.getAllBrand(function (err, rows) {
         if (err) { res.json(err); }
         else { res.json(rows.success.recordset); }

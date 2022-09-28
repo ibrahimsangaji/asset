@@ -21,6 +21,7 @@ export class FunctionComponent implements OnInit {
   OldCode = "";
   name = "";
   message = "";
+  RowStatus = null;
   hasError = false;
   @BlockUI('form-block') blockUIList: NgBlockUI;
   constructor(private masterService: MasterService,private toasterService:ToastrService) { }
@@ -37,6 +38,7 @@ export class FunctionComponent implements OnInit {
     this.masterService.getAllFunctions().subscribe(res => {
       this.functions = res;
       this.functionsOri = res;
+      console.log(res)
       this.blockUIList.stop();
     })
   }
@@ -59,11 +61,12 @@ export class FunctionComponent implements OnInit {
   submit() {
     this.code = this.code.toUpperCase();
     var cekTemp = 0;
+    if(this.functionsOri.find(m => m.Name === this.name && m.FunctionCode === this.code && m.RowStatus === this.RowStatus)){
     console.log(this.code)
     console.log(this.name)
     var tempcode = this.functionsOri.find(m=> m.FunctionCode == this.code)
 
-    if(this.functionsOri.find(m => m.Name === this.name && m.FunctionCode === this.code || m.FunctionCode === this.OldCode) || tempcode != undefined){
+
       this.toasterService.warning("Data already exist!");
       this.search = this.code;
       this.onSearch();
@@ -93,14 +96,16 @@ export class FunctionComponent implements OnInit {
       this.masterService.getFunctionsCriteria({ FunctionCode: this.OldCode }).subscribe(ck => {
         if (ck[0]) {
           console.log('updated')
-          this.masterService.updateFunctionNew({ Id: ck[0].Id ,Name: this.name, FunctionCode: this.code, LocationCode: this.locCode, OldCode : this.OldCode, UpdateDate : dateUpdate, UpdateBy : null }).subscribe(res => {
+          this.masterService.updateFunctionNew({ Id: ck[0].Id ,Name: this.name, FunctionCode: this.code, LocationCode: this.locCode, OldCode : this.OldCode, UpdateDate : dateUpdate, UpdateBy : null, RowStatus : this.RowStatus }).subscribe(res => {
             if (res.success) {
               this.OldCode = "";
               this.code = "";
               this.name = "";
               this.locCode = "";
               this.functions = [];
+              this.OldCode = "";
               this.toasterService.success("Data updated!");
+              this.blockUIList.stop();
               this.fetchData();
             }
           })
@@ -114,6 +119,7 @@ export class FunctionComponent implements OnInit {
               this.locCode = "";
               this.functions = [];
               this.toasterService.success("Data inserted!");
+              this.blockUIList.stop();
               this.fetchData();
             }
           })
@@ -122,7 +128,7 @@ export class FunctionComponent implements OnInit {
     } else {
       this.masterService.getFunctionsCriteria({ FunctionCode: this.code }).subscribe(ck => {
         if (ck[0]) {
-          this.masterService.putFunctions({ Name: this.name, FunctionCode: this.code, LocationCode: this.locCode, UpdateDate : dateUpdate, UpdateBy : null }).subscribe(res => {
+          this.masterService.putFunctions({ Name: this.name, FunctionCode: this.code, LocationCode: this.locCode, UpdateDate : dateUpdate, UpdateBy : null, RowStatus : this.RowStatus }).subscribe(res => {
             if (res.success) {
               this.OldCode = "";
               this.code = "";
@@ -130,6 +136,7 @@ export class FunctionComponent implements OnInit {
               this.locCode = "";
               this.functions = [];
               this.toasterService.success("Data updated!");
+              this.blockUIList.stop();
               this.fetchData();
             }
           })
@@ -153,6 +160,7 @@ export class FunctionComponent implements OnInit {
     this.code = func.FunctionCode;
     this.name = func.Name;
     this.locCode = func.LocationCode;
+    this.RowStatus = func.RowStatus;
   }
 
 }

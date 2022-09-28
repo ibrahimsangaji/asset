@@ -9,6 +9,7 @@ import { ClrDatagridStringFilterInterface } from "@clr/angular";
 import { Router } from '@angular/router';
 import { ExcelService } from 'src/app/services/excel.service';
 import { MasterService } from 'src/app/services/master.service';
+import { element } from '@angular/core/src/render3';
 
 class FunctionFilter implements ClrDatagridStringFilterInterface<any> {
   accepts(obj: any, search: string): boolean {
@@ -24,6 +25,7 @@ class FunctionFilter implements ClrDatagridStringFilterInterface<any> {
 })
 export class SetupstoComponent implements OnInit {
   @BlockUI('form-block') blockUIList: NgBlockUI;
+  @BlockUI('page-block') blockUIPage: NgBlockUI;
   functionFilter = new FunctionFilter();
   ls = new SecureLS();
   lock = false;
@@ -121,8 +123,17 @@ export class SetupstoComponent implements OnInit {
     this.showDetailModal = true;
     this.transactService.getCurrentPosition({ ReceiverFunction: sto.FunctionCode }).subscribe(res => {
       console.log(res)
+      console.log(sto)
       console.log(sto.FunctionCode)
+      res.forEach(element => {
+        if(element.StatusSTODT == 1 && sto.STOCode == element.STOCode){
+          element.StatusSTODT = 'Scanned';
+        }else{
+          element.StatusSTODT = 'Not Scanned';
+        }
+      });
       this.listStoDetail = res;
+      
       // console.log(this.listSto)
       console.log(this.listStoDetail)
     })
@@ -168,18 +179,72 @@ export class SetupstoComponent implements OnInit {
       this.handleError("Year must be defined");
       return false;
     }
-    this.lock = true;
-    this.transactService.getSTOCriteria({ Month: this.sto.Month, Year: this.sto.Year, RowStatus: 1 }).subscribe(res => {
+    var currYear = new Date().getFullYear()
+    var currMonth = new Date().getMonth()+1
+    if (this.sto.Year < currYear) {
+      this.handleError("Date cannot before today");
+      return false;
+    }
+    if (this.sto.Month < currMonth) {
+      this.handleError("Date cannot before today");
+      return false;
+    }
+    
+    this.blockUIPage.start()
+    console.log(this.sltmFuc)
+    if (this.sltmFuc == 0) {
+      this.transactService.getSTOCriteria({Month : this.sto.Month, Year : this.sto.Year, RowStatus : 1}).subscribe(resSto => {
+        if (resSto.length > 0){
+        
+        }else{
+          const filterRes = this.listSto.filter(element => {
+            return element.Status == 1;
+          });
+          var exceptFunc = []
+          filterRes.forEach(element => {
+            exceptFunc.push(element.FunctionCode)
+          })
+          var listFunc = []
+          var tempFunc = this.mFunction.filter(f => !exceptFunc.includes(f.FunctionCode) && f.RowStatus == 1)
+          tempFunc.forEach(element => {
+            listFunc.push({FunctionCode : element.FunctionCode, Status : 1, Month : this.sto.Month, Year : this.sto.Year, CreateBy : null})
+          })
+          
+          if(listFunc.length > 0){
+            console.log(listFunc)
+            this.transactService.batchSTO(listFunc).subscribe(resBatch => {
+              console.log(resBatch)
+              if(resBatch[0]){
+                this.fetchData()
+              }
+            })
+          }
+          
+        }
+      })
+      this.blockUIPage.stop()
+      this.lock = false;
+      return true;
+    }
+    this.transactService.getSTOCriteria({ Month: this.sto.Month, Year: this.sto.Year, RowStatus: 1, FunctionCode : this.sltmFuc }).subscribe(res => {
       if (res.length == 0) {
-
-        if (this.listSto.find(f => f.Status == 1)) {
+        
+        const filterRes = this.listSto.filter(element => {
+          return element.Status == 1 && element.FunctionCode == this.sltmFuc;
+        });
+        
+        console.log(filterRes)
+        
+        if (filterRes.length > 0) {
           this.lock = false;
-          this.handleError("This periode still has an active STO on function " + this.listSto.find(f => f.Status == 1).FunctionCode);
+          this.handleError("This periode still has an active STO on function " + filterRes[0].FunctionCode + " ( Month : "+ filterRes[0].Month + ", Year : "+ filterRes[0].Year + " )");
         } else {
-          async.each(this.mFunction.filter(f => f.FunctionCode !== ""), (i, callback) => {
+          console.log("masuk else")
+          async.each(this.mFunction.filter(f => f.FunctionCode == this.sltmFuc), (i, callback) => {
             this.sto.FunctionCode = i.FunctionCode;
             this.sto.Status = 1;
             this.transactService.postSTO(this.sto).subscribe(gen => {
+              console.log("selesai post")
               if (gen[0]) {
                 setTimeout(() => {
                   callback();
@@ -211,7 +276,7 @@ export class SetupstoComponent implements OnInit {
     }
     this.lock = true;
     // console.log(this.sto.Month,"----",this.sto.Year)
-    this.masterService.getReport(this.sto.Month, this.sto.Year).subscribe(raw => {
+    this.masterService.getReport(this.sto.Month, this.sto.Year, this.sltmFuc).subscribe(raw => {
       // console.log(raw)
       this.tempSt = raw
       this.excelService.exportAsExcelFile(raw, "export_raw");
@@ -221,17 +286,26 @@ export class SetupstoComponent implements OnInit {
   }
 
   downFile(stoDl) {
-    // console.log(stoDl)
+    console.log(stoDl)
 
-    this.transactService.getCurrentPosition({ ReceiverFunction: stoDl.FunctionCode }).subscribe(res => {
-      // console.log(this.listSto)
-      res.forEach(element => {
-        element.STONumber = stoDl.STOCode
-      });
-      
-      console.log(this.tempSt)
-      this.excelService.exportAsExcelFile(res, "report_"+stoDl.STOCode);
+    this.lock = true;
+    // console.log(this.sto.Month,"----",this.sto.Year)
+    this.masterService.getReport(stoDl.Month, stoDl.Year, stoDl.FunctionCode).subscribe(raw => {
+      // console.log(raw)
+      this.tempSt = raw
+      this.excelService.exportAsExcelFile(raw, "export_raw");
+      this.lock = false;
     })
+
+    // this.transactService.getCurrentPosition({ ReceiverFunction: stoDl.FunctionCode }).subscribe(res => {
+    //   // console.log(this.listSto)
+    //   res.forEach(element => {
+    //     element.STONumber = stoDl.STOCode
+    //   });
+      
+    //   console.log(this.tempSt)
+    //   this.excelService.exportAsExcelFile(res, "report_"+stoDl.STOCode);
+    // })
 
 
   }

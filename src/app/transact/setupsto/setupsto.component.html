@@ -1,4 +1,4 @@
-<div class="clr-row clr-justify-content-center">
+<div class="clr-row clr-justify-content-center" *blockUI="'page-block'">
   <div class="clr-col-11 clr-col-md-8">
     <div class="card">
       <form clrForm>
@@ -118,9 +118,11 @@
     <clr-datagrid>
       <clr-dg-column>Asset Number</clr-dg-column>
       <clr-dg-column>Name</clr-dg-column>
+      <clr-dg-column>Status</clr-dg-column>
       <clr-dg-row *clrDgItems="let obj of listStoDetail">
           <clr-dg-cell>{{obj.AssetNumber}}</clr-dg-cell>
         <clr-dg-cell>{{obj.Name}}</clr-dg-cell>
+        <clr-dg-cell>{{obj.StatusSTODT}}</clr-dg-cell>
       </clr-dg-row>
 
       <clr-dg-footer>

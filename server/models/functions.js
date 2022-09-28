@@ -32,7 +32,8 @@ exports.insertFunction = (Obj, done) => {
 };
 
 exports.updateFunctionOld = (Obj, done) => {
-    let sql = "update Functions set Name ='"+Obj.Name+"', LocationCode='"+Obj.LocationCode+"', UpdateDate='"+Obj.UpdateDate+"', UpdateBy='"+Obj.UpdateBy+"' where FunctionCode = '"+Obj.FunctionCode+"';";
+    let sql = "update Functions set Name ='"+Obj.Name+"', RowStatus ="+Obj.RowStatus+", LocationCode='"+Obj.LocationCode+"', UpdateDate='"+Obj.UpdateDate+"', UpdateBy='"+Obj.UpdateBy+"' where FunctionCode = '"+Obj.FunctionCode+"';";
+    console.log(sql)
     db.execSql(sql).then(res=>{
         done(null, res);
     }).catch((err)=> {

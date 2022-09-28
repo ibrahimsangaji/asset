@@ -61,8 +61,9 @@ exports.getAllAssetParams = (done) => {
     });  
 };
 
-exports.reportSTO = (month,year, done) => {
-    let sql = "exec up_printReport @month='"+month+"',@year='"+year+"';";
+exports.reportSTO = (month,year,code, done) => {
+    let sql = "exec up_printReport @month='"+month+"',@year='"+year+"', @code='"+code+"';";
+    console.log(sql)
     db.execSql(sql).then(res=>{
         done(null, res);
     }).catch((err)=> {
