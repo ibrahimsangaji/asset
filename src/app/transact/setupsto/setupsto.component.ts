@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
 import { ExcelService } from 'src/app/services/excel.service';
 import { MasterService } from 'src/app/services/master.service';
 import { element } from '@angular/core/src/render3';
+import { ToastrService } from 'ngx-toastr';
+import * as moment from 'moment';
 
 class FunctionFilter implements ClrDatagridStringFilterInterface<any> {
   accepts(obj: any, search: string): boolean {
@@ -43,7 +45,7 @@ export class SetupstoComponent implements OnInit {
   listStoDetail = [];
   showDetailModal = false;
   constructor(private router: Router, private transactService: TransactService,
-    private excelService: ExcelService, private masterService: MasterService) { }
+    private excelService: ExcelService, private masterService: MasterService, private toasterService:ToastrService) { }
 
   ngOnInit() {
     this.mFunction = this.ls.get('mfunctions');
@@ -167,6 +169,7 @@ export class SetupstoComponent implements OnInit {
         this.fetchData();
       });
 
+      this.sltmFuc = 0;
     }
   }
 
@@ -181,16 +184,14 @@ export class SetupstoComponent implements OnInit {
     }
     var currYear = new Date().getFullYear()
     var currMonth = new Date().getMonth()+1
-    if (this.sto.Year < currYear) {
-      this.handleError("Date cannot before today");
-      return false;
-    }
-    if (this.sto.Month < currMonth) {
+    
+    if (this.sto.Year < currYear || (this.sto.Year == currYear && this.sto.Month < currMonth)) {
       this.handleError("Date cannot before today");
       return false;
     }
     
-    this.blockUIPage.start()
+    
+    // this.blockUIPage.start()
     console.log(this.sltmFuc)
     if (this.sltmFuc == 0) {
       this.transactService.getSTOCriteria({Month : this.sto.Month, Year : this.sto.Year, RowStatus : 1}).subscribe(resSto => {
@@ -222,8 +223,8 @@ export class SetupstoComponent implements OnInit {
           
         }
       })
-      this.blockUIPage.stop()
-      this.lock = false;
+      // this.blockUIPage.stop()
+      // this.lock = false;
       return true;
     }
     this.transactService.getSTOCriteria({ Month: this.sto.Month, Year: this.sto.Year, RowStatus: 1, FunctionCode : this.sltmFuc }).subscribe(res => {
@@ -263,6 +264,8 @@ export class SetupstoComponent implements OnInit {
         this.handleError("This periode already exist");
       }
     })
+    
+    this.sltmFuc = 0;
   }
 
   goToPlay(obj) {
@@ -293,7 +296,11 @@ export class SetupstoComponent implements OnInit {
     this.masterService.getReport(stoDl.Month, stoDl.Year, stoDl.FunctionCode).subscribe(raw => {
       // console.log(raw)
       this.tempSt = raw
-      this.excelService.exportAsExcelFile(raw, "export_raw");
+      if(raw.length > 0){
+        this.excelService.exportAsExcelFile(raw, "export_raw");
+      }else{
+        this.toasterService.error("Null Data and Not Scanned");
+      }
       this.lock = false;
     })
 

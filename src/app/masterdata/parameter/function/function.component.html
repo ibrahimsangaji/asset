@@ -2,20 +2,20 @@
   <div class="clr-col-lg-12 clr-col-md-12 clr-col-12">
     <div class="card" *blockUI="'form-block'">
       <div class="card-header">
-        Form Function
+        Form Division/Project
       </div>
       <form clrForm>
         <div class="card-block">
           <clr-input-container  *ngIf="OldCode == ''" >
-            <label>Function Code</label>
+            <label>Division/Project Code</label>
             <input clrInput type="text" [(ngModel)]="code" name="funcCode" placeholder="Manually Assign" />
           </clr-input-container>
           <clr-input-container *ngIf="OldCode !== ''" >
-            <label>Function Code</label>
+            <label>Division/Project Code</label>
             <input clrInput disabled="disabled" type="text" [(ngModel)]="OldCode" name="funcCode" placeholder="Manually Assign" />
           </clr-input-container>
           <clr-input-container *ngIf="OldCode !== ''" >
-            <label>Function Code New</label>
+            <label>Division/Project Code New</label>
             <input clrInput type="text" [(ngModel)]="code" name="newFunCode" placeholder="Manually Assign" />
           </clr-input-container>
           <clr-select-container>

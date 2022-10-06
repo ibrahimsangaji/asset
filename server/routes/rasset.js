@@ -102,48 +102,20 @@ router.get('/params', function (req, res, next) {
     });
 });
 
-router.post('/report/:key1/:key2/:key3', function (req, res, next) {
 router.get('/report', function (req, res, next) {
     cmd.getReportAsset(function (err, rows) {
         if (err) { res.json(err); }
         else { 
             var record = rows.success.recordset;
-            var tempOut = []
-            record.forEach(element => {
-                var tempFind = (tempOut.filter(f=> f['Asset Number'] == element['Asset Number']))
-            if(tempFind.length > 0){
-                var index = tempOut.indexOf(tempFind[0])
-                tempOut[index]['Software'] = tempOut[index]['Software'] + ", " + element['Software']
-            }else{
-                tempOut.push(element)
-            }
-            })
-            // record.forEach(element => {
-            //     cmd.getAssetSW(element['Asset Number'], function (err2, rows2){
-            //         if (err2) { res.json(err2); }
-            //         else { 
-            //             var names = rows2.success.recordset.map(function(item) {
-            //                 return item['Name'];
-            //               });
-            //             element['Software'] = names.join(", ")
-            //             // console.log(element['Software'])
-            //          }
-            //     })
-            // });
             
-            // var flags = [], output = [], l = record.length, i;
-            // for( i=0; i<l; i++) {
-            //     if( flags[record[i]['Asset Number']]) continue;
-            //     flags[record[i]['Asset Number']] = true;
-            //     output.push(record[i]['Asset Number']);
-            // }
-            res.json(tempOut); 
-        
+            
+            res.json(record);                 
         }
     });
 });
-
-
+                
+                
+router.post('/report/:key1/:key2/:key3', function (req, res, next) {
     if (req.body) {
         console.log(req.body)
         cmd.reportSTO(req.params.key1, req.params.key2, req.params.key3, function (err, rows) {
@@ -152,6 +124,7 @@ router.get('/report', function (req, res, next) {
             else { res.json(rows.success.recordset); }
         });
     }
+
 });
 
 router.post('/mutation/:key1', function (req, res, next) {

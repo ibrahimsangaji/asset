@@ -22,7 +22,7 @@
               class="form-field" />
           </clr-input-container>
           <clr-select-container>
-            <label>Function</label>
+            <label>Division/Project</label>
             <select [attr.disabled]="'disabled'" class="form-field" clrSelect name="optFunction"
               [(ngModel)]="currentFunction">
               <option *ngFor="let func of mFunction" [value]="func.FunctionCode">{{func.Name}}</option>

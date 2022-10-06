@@ -37,7 +37,7 @@
           <my-date-picker [ngModelOptions]="{standalone: true}" [(ngModel)]="issueDateDisplay" placeholder=""
             [options]="myDatePickerOptions" (dateChanged)="onDateChanged($event)" class="form-field"></my-date-picker>
           <clr-select-container>
-            <label>Function</label>
+            <label>Division/Project</label>
             <select [attr.disabled]="lock ? 'disabled' : null" class="form-field" clrSelect name="optFunction"
               [(ngModel)]="assetOut.ReceiverFunction">
               <option *ngFor="let func of mFunction" [value]="func.FunctionCode">{{func.Name }}</option>

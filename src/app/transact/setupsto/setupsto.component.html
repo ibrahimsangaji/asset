@@ -23,7 +23,7 @@
             </select>
           </clr-select-container>
           <clr-select-container>
-            <label>Function</label>
+            <label>Division/Project</label>
             <select [attr.disabled]="lock ? 'disabled' : null" [(ngModel)]="sltmFuc" class="form-field" clrSelect name="OptFunc">
               <option value="0"> --ALL-- </option>
               <option *ngFor="let nFucnc of mFunction" [value]="nFucnc.FunctionCode">{{nFucnc.Name}}</option>
@@ -75,7 +75,7 @@
           <clr-dg-column>Year</clr-dg-column>
           <clr-dg-column>
             <clr-dg-string-filter [clrDgStringFilter]="functionFilter"></clr-dg-string-filter>
-            Function
+            Division/Project
           </clr-dg-column>
           <clr-dg-column>Action</clr-dg-column>
 

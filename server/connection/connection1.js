@@ -13,11 +13,11 @@ const sql = require('mssql');
 const configIT = {
     user: 'sa',
     //user: 'helpdesk',
-    password: 'P@ssw0rd!@#',
+    password: 'Acset2021',
     // server: 'asgard',
     server: 'localhost', // You can use 'localhost\\instance' to connect to named instance
     database: 'AssetIT',
-    port : 1433,
+    port : 50551,
     // options: {
     //     encrypt: false // Use this if you're on Windows Azure
     //     , instanceName: 'SQLEXPRESS'

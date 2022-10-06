@@ -158,12 +158,30 @@ export class AssetmaintainComponent implements OnInit {
     this.blockUIList.start();
     this.masterService.getAssetReport().subscribe(resGet => {
       console.log(resGet)
-      resGet.forEach(element => {
-          // console.log(element)
-          this.assets2.push(element)
-          this.assets3 = this.assets2
-          // console.log(this.assets3)
-        });
+      var tempGet = []
+      tempGet = resGet
+      var tempOut = []
+            tempGet.forEach(element => {
+                var tempFind = (tempOut.filter(f=> f['Asset Number'] == element['Asset Number']))
+                if(tempFind.length > 0){
+                    var index = tempOut.indexOf(tempFind[0])
+                    if(element['Software'] == null){
+                      element['Software'] = ''
+                    }
+                    if(tempOut[index]['Software'] == null){
+                      tempOut[index]['Software'] = ''
+                    }
+                    if(tempOut[index]['Software'].includes(element['Software'])){
+                        
+                    }else{
+                      tempOut[index]['Software'] = tempOut[index]['Software'] + ", " + element['Software']
+                    }
+                }else{
+                    tempOut.push(element)
+                }
+            })
+      console.log(tempOut)
+      this.assets2 = tempOut
     });
     this.blockUIList.stop();
   }
@@ -220,35 +238,34 @@ export class AssetmaintainComponent implements OnInit {
 
   exportData() {
     this.newGenerate()
-    var exportData = []
-    var flags = [], output = [], l = this.assets2.length, i;
-    for( i=0; i<l; i++) {
-        if( flags[this.assets2[i]['Asset Number']]) continue;
-        flags[this.assets2[i]['Asset Number']] = true;
-        output.push(this.assets2[i]['Asset Number']);
-    }
-    console.log(this.assets2)
-    this.assets2.forEach(element => {
-      
-      switch (element['Asset Status_Code']) {
-        case 1:
-          element['Asset Status_Description'] = 'Very Good-Used'
-          break;
-        case 2:
-          element['Asset Status_Description'] = 'Good-Used'
-          break;
-        case 3:
-          element['Asset Status_Description'] = 'Not Good'
-          break;
-        case 4:
-          element['Asset Status_Description'] = 'Damaged'
-          break;
-        case 5:
-          element['Asset Status_Description'] = 'Lost'
-          break;
-      }
-      
-    });
+    // var exportData = []
+    // var flags = [], output = [], l = this.assets2.length, i;
+    // for( i=0; i<l; i++) {
+    //     if( flags[this.assets2[i]['Asset Number']]) continue;
+    //     flags[this.assets2[i]['Asset Number']] = true;
+    //     output.push(this.assets2[i]['Asset Number']);
+    // }
+
+    // console.log(this.assets2)
+    // this.assets2.forEach(element => {
+    //   switch (element['Asset Status_Code']) {
+    //     case 1:
+    //       element['Asset Status_Description'] = 'Very Good-Used'
+    //       break;
+    //     case 2:
+    //       element['Asset Status_Description'] = 'Good-Used'
+    //       break;
+    //     case 3:
+    //       element['Asset Status_Description'] = 'Not Good'
+    //       break;
+    //     case 4:
+    //       element['Asset Status_Description'] = 'Damaged'
+    //       break;
+    //     case 5:
+    //       element['Asset Status_Description'] = 'Lost'
+    //       break;
+    //   }
+    // });
 
     this.ecs.exportAsExcelFile(this.assets2, "asset-IT");
   }

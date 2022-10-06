@@ -7,7 +7,7 @@
       <div class="card-block" style="min-height: 150px;">
         <clr-datagrid *blockUI="'grid-block'">
           <clr-dg-column>
-            Receiver Function
+            Division/Project
           </clr-dg-column>
           <clr-dg-column>
             Count Device
@@ -17,7 +17,8 @@
           </clr-dg-column>
           <clr-dg-row *clrDgItems="let asset of giHistory" [clrDgItem]="giHistory">
             <clr-dg-cell>{{(asset.ReceiverFunction | ffunctions : asset.ReceiverFunction).Name}}
-            </clr-dg-cell>
+            <!-- <clr-dg-cell>{{asset.ReceiverFunction}} -->
+          </clr-dg-cell>
             <clr-dg-cell>{{asset.CountDevices.length}} <a style="color:#0777BE;cursor: pointer;"
                 (click)="showDetail(asset.CountDevices)">(detail)</a>
             </clr-dg-cell>
